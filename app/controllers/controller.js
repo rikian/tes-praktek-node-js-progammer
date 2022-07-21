@@ -39,7 +39,7 @@ function handlerImage(req, res) {
         try {
             const dataImage = Buffer.concat(buff)
             buff = []
-            if (dataImage.length.toString() === req.headers["content-length"]) {
+            if (dataImage.length.toString() === req.headers["content-length"] && dataImage.length < 100000 && (req.headers["content-type"] === "image/jpg" || req.headers["content-type"] === "image/png" || req.headers["content-type"] === "image/jpeg")) {
                 const dataProduct = dataProducts.find((dataProduct) => dataProduct["token"] === req.headers["token"])                
                 if (!dataProduct) return res.json({"message" : "data product not found"})
                 dataProduct["gambar_barang"] = `${randomUUID()}.${req.headers["content-type"].split("/")[1]}`
@@ -67,6 +67,8 @@ function handlerImage(req, res) {
                     }
                 })
             }
+
+            return res.json({"message" : "failed save image"})
         } catch (error) {
             console.log(error.message)
             res.json({"message" : "pastikan semua data diisi dengan benar"})

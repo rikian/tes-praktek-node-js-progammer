@@ -2,6 +2,7 @@ const { host } = require("./config/confiq")
 
 function middleware(req, res, next) {
     try {
+        // untuk non aktivkan cors,
         res.setHeader("Access-Control-Allow-Origin", "*")
         res.setHeader("Access-Control-Allow-Headers", "*")
         const cookies = req.cookies
