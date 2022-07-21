@@ -26,7 +26,7 @@ if (!dataLogin ||
 ...
 ```
 ```javascript
-jika error, jangan lupa uncoment host di file config.js
+jika error, jangan lupa uncoment host to localhost di file config.js
 const host = `https://tes-praktek-node-js-progammer.herokuapp.com`
 // const host = `http://localhost:9091`
 ```
