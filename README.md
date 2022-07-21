@@ -13,7 +13,7 @@ npm run start or node index
 user name : rikian
 password : 54ng4t_R@h451A....
 
-atau dapat diubah di bagian middleware
+atau dapat diubah di bagian middleware.js
 
 ...
 if (!dataLogin || 
