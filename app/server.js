@@ -5,7 +5,6 @@ const app = express()
 const { router } = require("./router/router");
 
 function run(port) {
-    app.get("/", (req, res) => res.send("hello"))
     app.use(cookieParser())
     app.set("view engine", "ejs");
     app.use("/public/", express.static("static"));
