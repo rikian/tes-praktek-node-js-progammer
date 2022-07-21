@@ -15,4 +15,4 @@ function run(port) {
     app.listen(process.env.PORT || port, () => console.log("server listening on port " + port)).on("error", (err) => console.log(`failed listen at 127.0.0.0:${port}. Error : ${err.message}`))
 }
 
-module.exports = { run }
+module.exports = { run, app }
