@@ -180,7 +180,7 @@ function handlerProduct(req, res) {
                 dataProduct["stock"] = checkNumber(dataProduct["stock"])
     
                 if (!dataProduct["nama_barang"] || !dataProduct["harga_beli"] || !dataProduct["harga_jual"] || !dataProduct["stock"] ) {
-                    return res.send("pastikan semua data diisi dengan benar")
+                    return res.json({"message" : "pastikan semua data diisi dengan benar"})
                 }
     
                 dataProduct["gambar_barang"] = ``
@@ -203,7 +203,7 @@ function handlerProduct(req, res) {
             return res.json({"message" : "Method not allowed"})
         } catch (error) {
             console.log(error.message)
-            res.send("pastikan semua data diisi dengan benar")
+            res.json({"message" : "pastikan semua data diisi dengan benar"})
         }
     })
 

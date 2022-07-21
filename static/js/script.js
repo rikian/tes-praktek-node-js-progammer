@@ -13,7 +13,7 @@ var dataProducts = null
 var imagePreview = new FileReader
 var imageUpload = new FileReader
 var xml = new XMLHttpRequest
-var imgPreview = qs("#img-preview")
+var conImgPreview = qs("#con-img-preview")
 var imgFile = qs("#gambar-barang")
 var btnAddSubmit = qs("#btn-add-submit")
 var btnAddReset = qs("#btn-add-reset")
@@ -41,13 +41,28 @@ imgFile.addEventListener("change", function () {
     return alert(`data tidak sesuai. \ntype : ${type}\nsize : ${size/1000}kb\n\nPastikan file yang dikirim berjenis .jpeg, .jpg, atau .png\nDan ukuran file tidak melebihi 100kb`);
 })
 
+btnAddReset.addEventListener("click", function() {
+    if (conImgPreview.children.length == 1) {
+        conImgPreview.innerHTML = ""
+    }
+    
+    var newPreviewImage = ce("img")
+    newPreviewImage.setAttribute("src", "")
+    newPreviewImage.setAttribute("alt", "")
+    newPreviewImage.setAttribute("id", "img-preview")
+    newPreviewImage.style.maxWidth = "50%"
+    conImgPreview.appendChild(newPreviewImage)
+})
+
 imagePreview.onload = function() {
+    var imgPreview = qs("#img-preview")
     imgPreview.src = this.result;
     return;
 }
 
 btnAddSubmit.addEventListener("click", function() {
     try {
+        if (!namaBarang.value || !hargaBeli.value || !hargaJual.value || !stock.value) return alert("pastikan semua data diisi dengan benar")
         var dataProduct = JSON.stringify({
             "method" : "tambah data barang",
             "nama_barang" : namaBarang.value,
@@ -61,7 +76,7 @@ btnAddSubmit.addEventListener("click", function() {
         xml.setRequestHeader("token", "12345");
         xml.send(dataProduct);
     } catch (error) {
-        return alert(error.message)
+        return alert("pastikan semua data diisi dengan benar")
     }
 })
 
@@ -85,8 +100,11 @@ xml.onload = function() {
             if (dataProducts !== null) {
                 dataProducts.push(product)
                 var rowProductAdd = createRowProduct(product["id"])
+                console.log(rowProduct)
                 bodyProducts.appendChild(rowProductAdd)
                 alert("Tambah data barang berhasil")
+                btnAddReset.click()
+                imagePreview.src = ""
                 dataProduct.style.display = "block"
                 addProduct.style.display = "none"
                 window.location = host + `/#product-${product["id"]}`
@@ -155,7 +173,8 @@ xml.onload = function() {
         alert(message["message"])
     } catch (error) {
         console.log(error)
-        alert("error")
+        alert("woppsss sorry, somthing wrong!!")
+        window.location.reload()
     }
 }
 
