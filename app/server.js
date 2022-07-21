@@ -8,8 +8,7 @@ function run(port) {
     app.use(cookieParser())
     app.set("view engine", "ejs");
     app.use("/public/", express.static("static"));
-    app.use("/plugins/", express.static("static/adminlte/plugins"));
-    app.use("/dist/", express.static("static/adminlte/dist"));
+    app.use("/static/", express.static("static/adminlte"));
     app.use("/media/", express.static("media"));
     app.use((req, res, next) => middleware(req, res, next))
     app.use("/", router)
