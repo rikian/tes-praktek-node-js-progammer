@@ -1,0 +1,7 @@
+.db-row{
+    overflow: scroll;
+}
+
+.db-row::-webkit-scrollbar {
+    width: 0;
+}
