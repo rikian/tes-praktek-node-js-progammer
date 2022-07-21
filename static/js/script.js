@@ -217,6 +217,7 @@ function createRowProduct(id) {
         var imageProduct = ce("img")
         imageProduct.setAttribute("src", host + `/media/images/${product["gambar_barang"]}`)
         imageProduct.setAttribute("alt", `assets`)
+        imageProduct.setAttribute("loading", "lazy")
         imageProduct.style.width = "40px"
         imageProduct.style.heiht = "40px"
         tdImage.appendChild(imageProduct)
