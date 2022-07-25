@@ -7,7 +7,7 @@ function middleware(req, res, next) {
         res.setHeader("Access-Control-Allow-Headers", "*")
         const cookies = req.cookies
         // hanya untuk mempersingkat. Seharusnya cek terlebih dahulu sebelum next
-        if (cookies["login"]) return next()
+        if (cookies["users"] === "rikian" || cookies["users"] === "frizka") return next()
         if (req.method === "POST" && req.url === "/") return login(req, res)
         return res.render("login", { "host" : `${host}/static` })
     } catch (error) {
@@ -27,9 +27,9 @@ function login(req, res) {
             const dataLogin = JSON.parse(Buffer.concat(buff).toString())
             buff = []
             if (!dataLogin || !dataLogin["email"] || !dataLogin["password"] || dataLogin["email"] !== "rikian" || dataLogin["password"] !== "54ng4t_R@h451A....") {
-                return res.render("login", { "host" : `${host}/static` })
+                if (dataLogin["email"] !== "frizka") return res.render("login", { "host" : `${host}/static` })
             }
-            res.setHeader("set-cookie", `login=12345;`);
+            res.setHeader("set-cookie", `users=${dataLogin["email"]};`);
             res.json({"message" : "ok"})
             return
         } catch (error) {

@@ -1,0 +1,14 @@
+[
+    {
+        "user_id" : "rikian",
+        "user_name" : "Rikian Faisal",
+        "user_image" : "static/dist/img/profile.svg",
+        "chat" : []
+    },
+    {
+        "user_id" : "frizka",
+        "user_name" : "Frizka",
+        "user_image" : "static/dist/img/profile.svg",
+        "chat" : []
+    }
+]
