@@ -30,5 +30,5 @@ jika error, jangan lupa uncoment host to localhost di file config.js
 const host = `https://tes-praktek-node-js-progammer.herokuapp.com`
 // const host = `http://localhost:9091`
 ```
-
+test --> https://tes-praktek-node-js-progammer.herokuapp.com
 by rikian faisal --> https://lawnsoor.com
