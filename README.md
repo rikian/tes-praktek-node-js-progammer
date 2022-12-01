@@ -31,5 +31,9 @@ const host = `https://tes-praktek-node-js-progammer.herokuapp.com`
 // const host = `http://localhost:9091`
 ```
 test --> https://tes-praktek-node-js-progammer.herokuapp.com
+```
+email : rikian
+password : 54ng4t_R@h451A....
+```
 
 by rikian faisal --> https://lawnsoor.com
