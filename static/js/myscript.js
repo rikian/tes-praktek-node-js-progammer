@@ -293,7 +293,7 @@ function viewProduct(id) {
         }
     }
     dataProduct.style.display = "none"
-    _viewImage.src = host + `/media/images/${product["gambar_barang"]}`
+    _viewImage.src = `/media/images/${product["gambar_barang"]}`
     _viewNamaBarang.innerText = `Nama Barang : ${product["nama_barang"]}`
     _viewHargaJual.innerText = `Harga Jual : ${product["harga_jual"]}`
     _viewHargaBeli.innerText = `Harga Beli : ${product["harga_beli"]}`
