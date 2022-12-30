@@ -14,6 +14,7 @@ function run(port) {
     app.use("/media/", express.static("media"));
     app.use((req, res, next) => middleware(req, res, next))
     app.use("/", router)
+
     socket.listen(process.env.PORT || port, "0.0.0.0", () => console.log("server listening on port " + port)).on("error", (err) => console.log(`failed listen at 127.0.0.0:${port}. Error : ${err.message}`))
 }
 
