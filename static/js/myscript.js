@@ -1,12 +1,18 @@
 "use strict"
-var host  = window.location.origin
-
 function qs(elm) {
     return document.querySelector(elm)
 }
 
 function ce(elm) {
     return document.createElement(elm)
+}
+
+var host  = window.location.origin
+
+var apiURL = {
+    "get_products" : host + "/api/products/",
+    "update_product" : host + "/api/products/product/",
+    "delete_product" : host + "/api/products/product/"
 }
 
 var dataProducts = null
@@ -21,7 +27,7 @@ var btnAddClose = qs("#btn-add-close")
 
 // get products
 var bodyProducts = qs("#body-products")
-xml.open("GET", host + "/products/", true);
+xml.open("GET", apiURL.get_products, true);
 xml.send();
 
 // handler tambah product
@@ -71,7 +77,7 @@ btnAddSubmit.addEventListener("click", function() {
             "stock" : stock.value
         })
 
-        xml.open("POST", host + "/products/save-data/", true);
+        xml.open("POST", host + "/api/products/save-data/", true);
         xml.setRequestHeader("content-type", imgFile.files[0].type);
         xml.setRequestHeader("token", "12345");
         xml.send(dataProduct);
@@ -83,15 +89,29 @@ btnAddSubmit.addEventListener("click", function() {
 xml.onload = function() {
     try {
         var message = JSON.parse(this.responseText)
+
+        if (message && message["code"] === 200 && message["method"] === "get all products") {
+            if (!bodyProducts) return
+            dataProducts = message["products"]
+
+            for (var i = 0; i < dataProducts.length; i++) {
+                var rowProduct = createRowProduct(dataProducts[i]["id"])
+                bodyProducts.appendChild(rowProduct)
+            }
+            
+            return
+        }
+
         if (message && message["code"] === 200 && message["method"] === "post data product" && message["token"]) {
             imageUpload.readAsArrayBuffer(imgFile.files[0])
             imageUpload.onload = function() {
-                xml.open("POST", host + "/products/save-image/", true);
+                xml.open("POST", host + "/api/products/save-image/", true);
                 xml.setRequestHeader("content-type", imgFile.files[0].type);
                 xml.setRequestHeader("token", message["token"]);
                 xml.send(this.result);
                 return
             }
+
             return
         }
 
@@ -112,17 +132,6 @@ xml.onload = function() {
             }
 
             return window.location.reload() 
-        }
-
-        if (message && message["code"] === 200 && message["method"] === "get all products") {
-            if (!bodyProducts) return
-            dataProducts = message["products"]
-
-            for (let i = 0; i < dataProducts.length; i++) {
-                var rowProduct = createRowProduct(dataProducts[i]["id"])
-                bodyProducts.appendChild(rowProduct)
-            }
-            return
         }
 
         if (message && message["method"] === "success update data") {
@@ -173,8 +182,7 @@ xml.onload = function() {
         alert(message["message"])
     } catch (error) {
         console.log(error)
-        alert("woppsss sorry, somthing wrong!!")
-        window.location.reload()
+        alert("woppsss sorry, somthing wrong!!\nPlease reload...")
     }
 }
 
@@ -357,7 +365,7 @@ _btnUpdateSubmit.addEventListener("click", function() {
         "gambar_barang" : _updateGambarBarang.innerText,
     })
 
-    xml.open("POST", host + "/products/product/", true)
+    xml.open("POST", host + "/api/products/product/", true)
     xml.setRequestHeader("content-type", "application/json")
     xml.setRequestHeader("token", "12345")
     xml.send(newDataProduct)
@@ -372,7 +380,7 @@ function deleteProduct(id) {
             "method" : "hapus data barang",
             "id" : id
         })
-        xml.open("DELETE", host + "/products/product/", true)
+        xml.open("DELETE", host + "/api/products/product/", true)
         xml.setRequestHeader("content-type", "application/json")
         xml.setRequestHeader("token", "12345")
         xml.send(dataProduct)
@@ -403,7 +411,7 @@ paginations.forEach(function(pagination){
         dbSearch.style.display = "none"    
         bodyPagination.innerHTML = ""
         var q = pagination.innerText
-        for (let i = 0; i < dataProducts.length; i++) {
+        for (var i = 0; i < dataProducts.length; i++) {
             if (dataProducts[i]["nama_barang"].charAt(0) === q) {
                var rowBarang = createRowProduct(dataProducts[i]["id"])
                bodyPagination.appendChild(rowBarang)
@@ -422,7 +430,7 @@ searchBr.addEventListener("keyup", function() {
     dbMain.style.display = "none"
     dbPaginations.style.display = "none"
     dbSearchBody.innerHTML = ""
-    for (let i = 0; i < dataProducts.length; i++) {
+    for (var i = 0; i < dataProducts.length; i++) {
         if (dataProducts[i]["nama_barang"].match(searchBr.value)) {
            var barangSeacrh = createRowProduct(dataProducts[i]["id"])
            dbSearchBody.appendChild(barangSeacrh)

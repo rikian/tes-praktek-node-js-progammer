@@ -1,14 +1,29 @@
 [
     {
-        "user_id" : "rikian",
-        "user_name" : "Rikian Faisal",
-        "user_image" : "static/dist/img/profile.svg",
-        "chat" : []
+        "user_id":"r-001",
+        "user_email":"rikian@coolguy.com", 
+        "user_password":"e83982f3456eba975ad1fc8d50349c41a9893db710a1e48a5d66a65535673fa0",
+        "user_name":"Rikian Faisal",
+        "user_image":"static/dist/img/profile.svg",
+        "user_session":"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoici0wMDEifQ.SIBt9jpEbJmXup8NthvB6mwSwF5u8kKqhfVw_damjB4",
+        "chat":[]
     },
     {
-        "user_id" : "frizka",
-        "user_name" : "Frizka",
-        "user_image" : "static/dist/img/profile.svg",
-        "chat" : []
+        "user_id":"r-002",
+        "user_email":"frizka@gmail.com",
+        "user_name":"Frizka",
+        "user_password":"e83982f3456eba975ad1fc8d50349c41a9893db710a1e48a5d66a65535673fa0",
+        "user_image":"static/dist/img/profile.svg",
+        "user_session":"",
+        "chat":[]
+    },
+    {
+        "user_id":"r-003",
+        "user_email":"boim@gmail.com",
+        "user_name":"Boim",
+        "user_password":"e83982f3456eba975ad1fc8d50349c41a9893db710a1e48a5d66a65535673fa0",
+        "user_image":"static/dist/img/profile.svg",
+        "user_session":"",
+        "chat":[]
     }
 ]

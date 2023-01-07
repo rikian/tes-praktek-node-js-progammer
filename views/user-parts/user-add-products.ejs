@@ -1,0 +1,104 @@
+<div id="container-user-add-products" class="container-form-add-products">
+    <form id="form-add-products" class="form-products">
+        <h3>Tambah Barang</h3>
+        <div class="container-image-preview"></div>
+        <input type="text" id="tb-nama-barang" name="nama_barang" placeholder="Nama Barang">
+        <input type="number" id="tb-harga-beli" name="harga_beli" placeholder="Harga Beli">
+        <input type="number" id="tb-harga-jual" name="harga_jual" placeholder="Harga Jual">
+        <input type="number" id="tb-stok" name="stok" placeholder="Stok">
+        <input onchange="validationImage(event)" name="gambar_barang" type="file" id="tb-gambar-barang">
+        <button onclick="addProducts(event)" type="submit">Tambah</button>
+        <button onclick="resetFormAddProducts(event)" class="tb-button-reset-barang" type="reset">Reset</button>
+    </form>
+
+    <script>
+        var tbNamaBarang = document.querySelector("#tb-nama-barang")
+        var tbHargaBeli = document.querySelector("#tb-harga-beli")
+        var tbHargaJual = document.querySelector("#tb-harga-jual")
+        var tbStok = document.querySelector("#tb-stok")
+        var tbGambarBarang = document.querySelector("#tb-gambar-barang")
+        var tbButtonResetTambahBarang = document.querySelector(".tb-button-reset-barang")
+        var frImagePreview = new FileReader
+        var xml = new XMLHttpRequest
+        var containerImagePreview = document.querySelector(".container-image-preview")
+        var imagePreview = document.querySelector(".image-preview")
+
+        function validationImage(e) {
+            if (containerImagePreview.children.length != 0) {
+                containerImagePreview.innerHTML = ""
+            }
+
+            if (e.target.files.length !== 1) {
+                return tbButtonResetTambahBarang.click()
+            }
+
+            var fileImage = e.target.files[0]
+
+            if (fileImage.size > 204800) {
+                return alert("gambar tidak bileh lebih dari 200kb")
+            }
+
+            switch (fileImage.type) {
+                case "image/jpeg" :
+                    break
+                case "image/jpg" :
+                    break
+                case "image/png" :
+                    break
+                default:
+                    return alert("kami tidak mendukung type " + fileImage.type + "\nsilahkan pilih gambar lain dengan format .jpeg, .jpg atau .png")
+            }
+
+            var imagePreview = document.createElement("img")
+            imagePreview.setAttribute("src", "")
+            frImagePreview.readAsDataURL(fileImage)
+            frImagePreview.onload = function(e) {
+                containerImagePreview.appendChild(imagePreview)
+                imagePreview.src = e.target.result
+            }
+        }
+
+        function resetFormAddProducts(event) {
+            if (containerImagePreview.children.length != 0) {
+                containerImagePreview.innerHTML = ""
+            }
+        }
+
+        function addProducts(e) {
+            e.preventDefault()
+            if (!tbNamaBarang.value) return alert("Nama Barang tidal boleh kosong")
+            if(!tbHargaBeli.value) return alert("Harga Beli tidal boleh kosong")
+            if(!tbHargaJual.value) return alert("Harga Jual tidal boleh kosong")
+            if(!tbStok.value) return alert("Stok Barang tidal boleh kosong")
+            if(tbGambarBarang.files.length !== 1) return alert("Gambar Barang tidal boleh kosong")
+
+            var fileImage = tbGambarBarang.files[0]
+            
+            if (fileImage.size > 204800) {
+                return alert("gambar tidak bilih lebih diri 200kb")
+            }
+
+            switch (fileImage.type) {
+                case "image/jpeg" :
+                    break
+                case "image/jpg" :
+                    break
+                case "image/png" :
+                    break
+                default:
+                    alert("kami tidak mendukung type " + fileImage.type + "\nsilahkan pilih gambar lain dengan format .jpeg, .jpg atau .png")
+                    window.location.reload()
+                    return 
+            }
+
+            var dataProduct = new FormData(document.querySelector("#form-add-products"))
+            
+            xml.open("post", "/api/products/", true)
+            xml.send(dataProduct)
+            xml.onload = function() {
+                console.log(this.responseText)
+                window.location.reload()
+            }
+        }
+    </script>
+</div>

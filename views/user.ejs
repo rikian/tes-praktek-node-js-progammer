@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="/static/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/adminlte.min.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+            line-height: 15px;
+        }
+
+        img {
+            width: 180px;
+            height: 150px;
+            margin-bottom: 3px;
+        }
+
+        body{
+            width: 100%;
+            height: 100%;
+        }
+
+        .container-visitor-products{
+            border: 1px solid black;
+        }
+
+        .ul-products{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .li-product{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 250px;
+            height: 400px;
+            border: 1px solid black;
+            border-radius: 5px;
+            margin: 2px;
+            padding: 2px;
+        }
+
+        .beli-product{
+            margin-top: 5px;
+            border: none;
+            width: 150px;
+            height: 40px;
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            background-color: green;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .beli-product:hover {
+            background-color: rgb(3, 70, 3);
+        }
+
+        /* user section */
+        .btn-fix{
+            position: fixed;
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 50px;
+            height: 50px;
+            background-color: green;
+            color: white;
+            font-size: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-fix:hover {
+            background-color: rgb(3, 70, 3);
+        }
+
+        .btn-tambah-barang {
+            right: 5px;
+            bottom: 5px;
+        }
+
+        .btn-ubah-barang {
+            right: 5px;
+            bottom: 60px;
+        }
+
+        .container-form-add-products{
+            /* position: fixed; */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+            height: 100%;
+            background-color: white;
+        }
+        
+        .form-products{
+            width: 300px;
+            border: 1px solid black;
+            border-radius: 5px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            
+            margin: 5px;
+            padding: 5px;
+        }
+        
+        .form-products input {
+            margin: 5px;
+            padding: 5px;
+            height: 40px;
+            border-radius: 5px;
+        }
+
+        .form-products button {
+            margin: 5px;
+            padding: 5px;
+            height: 40px;
+            border-radius: 5px;
+
+            width: 200px;
+            height: 30px;
+            background-color: green;
+            color: white;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <!-- visitor -->
+        <header>
+            <h1 id="h1-header" class="h1-header">Home Page</h1>
+            <p>Hello <%= user["user_email"] %> </p>
+            <button onclick="logout(event)" id="button-logout" style="width: 100px;" class="btn btn-primary btn-block">Logout</button>
+
+            <script>
+                var XMLlogout = new XMLHttpRequest()
+                function logout(e) {
+                    XMLlogout.open("post", "/auth/logout/", true)
+                    XMLlogout.send("")
+
+                    XMLlogout.onload = function(e) {
+                        window.location.reload()
+                    }
+                }
+            </script>
+        </header>
+
+        <section id="visitor-page" class="visitor-page">
+            <div class="container-visitor-products">
+                <ul class="ul-products">
+                    <% for( product of products ) { %>
+                        <li class="li-product">
+                            <img src="/media/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
+                            <!-- <p>URL Gambar Barang : <%= product.gambar_barang %></p> -->
+                            <p>User Id : <%= product.user_id %></p>
+                            <p>Id : <%= product.id_barang %></p>
+                            <p>Nama Barang : <%= product.nama_barang %></p>
+                            <p>Harga Beli : Rp. <%= product.harga_beli %> ,-</p>
+                            <p>Harga Jual : Rp. <%= product.harga_jual %> ,-</p>
+                            <p>Stok : <%= product.stok %></p>
+                            <button class="beli-product">Beli Sekarang</button>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </section>
+
+        <section id="user-page" class="user-page">
+            <section class="user-products">
+                <%- include('./user-parts/user-products') %>
+            </section>
+
+            <section class="user-add-products">
+                <%- include('./user-parts/user-add-products') %>
+            </section>
+
+            <section class="user-update-products">
+                <%- include('./user-parts/user-update-products') %>
+            </section>
+        </section>
+
+        <button id="button-open-container-user-add-products" onclick="openContainerUserAddProduts(event)" class="btn-fix btn-tambah-barang">+</button>
+        <button id="button-open-container-user-products" onclick="openContainerUserProducts(event)" class="btn-fix btn-ubah-barang">O</button>
+        <footer></footer>
+    </main>
+
+    <script>
+        // dom display
+        var h1Header = document.querySelector("#h1-header")
+        var buttonOpenContainerUserAddProducts = document.querySelector("#button-open-container-user-add-products")
+        var buttonOpenContainerUserProducts = document.querySelector("#button-open-container-user-products")
+
+        var visitorPage = document.querySelector("#visitor-page")
+        var userPage = document.querySelector("#user-page")
+        var containerUserProducts = document.querySelector("#container-user-products")
+        var containerUserAddProducts = document.querySelector("#container-user-add-products")
+        var containerUserUpdateProducts = document.querySelector("#container-user-update-products")
+
+        visitorPage.style.display = "flex"
+
+        containerUserProducts.style.display = "none"
+        containerUserAddProducts.style.display = "none"
+        containerUserUpdateProducts.style.display = "none"
+
+        function openContainerUserAddProduts(e) {
+            if(containerUserAddProducts.style.display === "none") {
+                h1Header.innerText = "User Page"
+                
+                buttonOpenContainerUserAddProducts.innerText = "X"
+                buttonOpenContainerUserProducts.innerText = "O"
+
+                visitorPage.style.display = "none"
+        
+                containerUserProducts.style.display = "none"
+                containerUserAddProducts.style.display = "flex"
+                containerUserUpdateProducts.style.display = "none"
+                return
+            }
+            
+            h1Header.innerText = "Home Page"
+            
+            buttonOpenContainerUserAddProducts.innerText = "+"
+            buttonOpenContainerUserProducts.innerText = "O"
+            
+            visitorPage.style.display = "flex"
+    
+            containerUserProducts.style.display = "none"
+            containerUserAddProducts.style.display = "none"
+            containerUserUpdateProducts.style.display = "none"
+            return
+        }
+
+        function openContainerUserProducts(e) {
+            if(containerUserProducts.style.display === "none") {
+                h1Header.innerText = "User Page"
+                
+                buttonOpenContainerUserAddProducts.innerText = "+"
+                buttonOpenContainerUserProducts.innerText = "C"
+
+                visitorPage.style.display = "none"
+        
+                containerUserProducts.style.display = "flex"
+                containerUserAddProducts.style.display = "none"
+                containerUserUpdateProducts.style.display = "none"
+                return
+            }
+            
+            h1Header.innerText = "Home Page"
+            
+            buttonOpenContainerUserAddProducts.innerText = "+"
+            buttonOpenContainerUserProducts.innerText = "O"
+            
+            visitorPage.style.display = "flex"
+    
+            containerUserProducts.style.display = "none"
+            containerUserAddProducts.style.display = "none"
+            containerUserUpdateProducts.style.display = "none"
+            return
+        }
+
+        function openContainerUserUpdateProducts(e, p) {
+            if(containerUserUpdateProducts.style.display === "none") {
+                upPgBarang.src = "/media/" + p.gambar_barang
+                upIdUser.value = p.user_id
+                upIdBarang.value = p.id_barang
+                upNameBarang.value = p.nama_barang
+                upHargaBeli.value = parseInt(p.harga_beli)
+                upHargaJual.value = parseInt(p.harga_jual)
+                upStok.value = parseInt(p.stok)
+                upGambarBarang.value = p.gambar_barang
+
+                h1Header.innerText = "User Page"
+                
+                buttonOpenContainerUserAddProducts.innerText = "+"
+                buttonOpenContainerUserProducts.innerText = "O"
+
+                visitorPage.style.display = "none"
+                containerUserProducts.style.display = "none"
+                containerUserAddProducts.style.display = "none"
+                containerUserUpdateProducts.style.display = "flex"
+                return
+            }
+            
+            h1Header.innerText = "Home Page"
+            
+            buttonOpenContainerUserAddProducts.innerText = "+"
+            buttonOpenContainerUserProducts.innerText = "O"
+            
+            visitorPage.style.display = "flex"
+            containerUserProducts.style.display = "none"
+            containerUserAddProducts.style.display = "none"
+            containerUserUpdateProducts.style.display = "none"
+            return
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<div id="container-user-update-products" class="container-user-update-products">
+    <form id="form-ubah-barang" class="form-products">
+        <h3>Update Barang</h3>
+        <div id="container-image-preview-ubah-barang">
+            <img id="up-p-gambar-barang" src="" alt="">
+        </div>
+        <input type="hidden" id="ubah-id-user" name="user_id" placeholder="Nama Barang">
+        <input type="hidden" id="ubah-id-barang" name="id_barang" placeholder="Nama Barang">
+        <input type="text" id="ubah-nama-barang" name="nama_barang" placeholder="Nama Barang">
+        <input type="number" id="ubah-harga-beli" name="harga_beli" placeholder="Harga Beli">
+        <input type="number" id="ubah-harga-jual" name="harga_jual" placeholder="Harga Jual">
+        <input type="number" id="ubah-stok" name="stok" placeholder="Stok">
+        <input type="hidden" id="ubah-gambar_barang" name="gambar_barang">
+        <input style="display: none;" type="file" onchange="selectNewImages(event)" name="gambar_barang_baru" id="up-gambar-barang-baru">
+        <button onclick="openImageFiles(event)">Ganti Gambar</button>
+        
+        <button type="submit" onclick="updateBarang(event)">Update</button>
+    </form>
+
+    <script>
+        var upPgBarang = document.querySelector("#up-p-gambar-barang")
+        var upIdUser = document.querySelector("#ubah-id-user")
+        var upIdBarang = document.querySelector("#ubah-id-barang")
+        var upNameBarang = document.querySelector("#ubah-nama-barang")
+        var upHargaBeli = document.querySelector("#ubah-harga-beli")
+        var upHargaJual = document.querySelector("#ubah-harga-jual")
+        var upStok = document.querySelector("#ubah-stok")
+        var upGambarBarang = document.querySelector("#ubah-gambar_barang")
+        var upGambarBarangBaru = document.querySelector("#up-gambar-barang-baru")
+        var containerImagePreviewUpdateBarang = document.querySelector("#container-image-preview-ubah-barang")
+
+        var frNewImages = new FileReader()
+        var xmlUbahBarang = new XMLHttpRequest()
+
+        function openImageFiles(e) {
+            e.preventDefault()
+
+            upGambarBarangBaru.click()
+        }
+
+        function selectNewImages(e) {
+            var fileImage = e.target.files[0]
+
+            if (fileImage.size > 204800) {
+                return alert("gambar tidak bileh lebih dari 200kb")
+            }
+
+            switch (fileImage.type) {
+                case "image/jpeg" :
+                    break
+                case "image/jpg" :
+                    break
+                case "image/png" :
+                    break
+                default:
+                    return alert("kami tidak mendukung type " + fileImage.type + "\nsilahkan pilih gambar lain dengan format .jpeg, .jpg atau .png")
+            }
+
+            frNewImages.readAsDataURL(fileImage)
+            frNewImages.onload = function(e) {
+                if(containerImagePreviewUpdateBarang.children.length != 0) {
+                    containerImagePreviewUpdateBarang.innerHTML = ""
+                }
+
+                var imagePreview = document.createElement("img")
+                imagePreview.setAttribute("src", "")
+                imagePreview.src = e.target.result
+                containerImagePreviewUpdateBarang.appendChild(imagePreview)
+            }
+        }
+
+        function updateBarang(e) {
+            e.preventDefault()
+
+            // validasi data barang baru
+            if (
+                !upIdUser.value || 
+                !upIdBarang.value || 
+                !upGambarBarang.value || 
+                !upNameBarang.value || 
+                !upHargaBeli.value || 
+                !upHargaJual.value || 
+                !upStok.value || 
+                !upGambarBarang.value
+                ) {
+                return alert("data tidak sesuai silahkan muat ulang...")
+            }
+
+            if(upGambarBarangBaru.files.length == 0) {
+                var dataBarangBaru = "user_id="+upIdUser.value+"&id_barang="+upIdBarang.value+"&nama_barang="+upNameBarang.value+"&harga_jual="+upHargaJual.value+"&harga_beli="+upHargaBeli.value+"&stok="+upStok.value+"&gambar_barang="+upGambarBarang.value
+
+                xmlUbahBarang.open("put", "/api/products/", true)
+                xmlUbahBarang.setRequestHeader("content-type", "application/x-www-form-urlencoded")
+                xmlUbahBarang.send(dataBarangBaru)
+                xmlUbahBarang.onload = function() {
+                    console.log(this.responseText)
+
+                    window.location.reload()
+                }
+
+                return
+            }
+
+            if(upGambarBarangBaru.files.length == 1) {
+                var fileImage = upGambarBarangBaru.files[0]
+
+                if (fileImage.size > 204800) {
+                    return alert("gambar tidak bileh lebih dari 200kb")
+                }
+
+                switch (fileImage.type) {
+                    case "image/jpeg" :
+                        break
+                    case "image/jpg" :
+                        break
+                    case "image/png" :
+                        break
+                    default:
+                        return alert("kami tidak mendukung type " + fileImage.type + "\nsilahkan pilih gambar lain dengan format .jpeg, .jpg atau .png")
+                }
+
+                var dataBarangBaru = new FormData(document.querySelector("#form-ubah-barang"))
+
+                xmlUbahBarang.open("put", "/api/products/", true)
+                xmlUbahBarang.send(dataBarangBaru)
+                xmlUbahBarang.onload = function() {
+                    console.log(this.responseText)
+
+                    window.location.reload()
+                }
+
+                return
+            }
+
+            alert("internal server error. silahkan muat ulang...")
+        }
+    </script>
+</div>

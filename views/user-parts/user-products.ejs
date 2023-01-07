@@ -1,0 +1,42 @@
+<div id="container-user-products" class="container-user-products">
+    <ul class="ul-products">
+        <% for( product of userProducts ) { %>
+            <li class="li-product">
+                <img src="/media/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
+                <p>User Id : <%= product.user_id %></p>
+                <p>Id : <%= product.id_barang %></p>
+                <p>Nama Barang : <%= product.nama_barang %></p>
+                <p>Harga Beli : Rp. <%= product.harga_beli %> ,-</p>
+                <p>Harga Jual : Rp. <%= product.harga_jual %> ,-</p>
+                <p>Stok : <%= product.stok %></p>
+                <button onclick="openContainerUserUpdateProducts(event, {
+                    'gambar_barang' : '<%=product.gambar_barang %>',
+                    'user_id' : '<%= product.user_id %>',
+                    'id_barang' : '<%= product.id_barang %>',
+                    'nama_barang' : '<%= product.nama_barang %>',
+                    'harga_beli' : '<%= product.harga_beli %>',
+                    'harga_jual' : '<%= product.harga_jual %>',
+                    'stok' : '<%= product.stok %>'
+                })" class="beli-product">Ubah</button>
+                <button onclick="deleteProduct(event, {
+                    'user_id' : '<%= product.user_id %>',
+                    'id_barang' : '<%= product.id_barang %>',
+                })" class="beli-product">Hapus</button>
+            </li>
+        <% } %>
+
+        <script>
+            var xmlDeleteProduct = new XMLHttpRequest()
+            function deleteProduct(e, dataBarang) {
+                xmlDeleteProduct.open("delete", "/api/products/", true)
+                xmlDeleteProduct.setRequestHeader("content-type", "application/x-www-form-urlencoded")
+                xmlDeleteProduct.send("user_id="+dataBarang.user_id+"&id_barang="+dataBarang.id_barang)
+
+                xmlDeleteProduct.onload = function(e) {
+                    console.log(this.responseText)
+                    window.location.reload()
+                }
+            }
+        </script>
+    </ul>
+</div>
