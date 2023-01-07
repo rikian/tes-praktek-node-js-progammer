@@ -16,7 +16,7 @@ user name : boim@gmail.com
 password : 54ng4t_R@h451A....
 ```
 ```javascript
-atau dapat diubah di bagian models -> users.json
+atau dapat diubah di bagian app -> models -> users.json
 ...
 
 ```
@@ -25,7 +25,7 @@ jika error, jangan lupa uncoment address to 0.0.0.0 di file .env
 ```
 
 ```
-configuration server -> injector -> injector.js
+configuration server app -> injector -> injector.js
 ```
 
 test --> https://good-blue-blackbuck-hose.cyclic.app
