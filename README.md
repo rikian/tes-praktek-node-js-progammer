@@ -15,6 +15,9 @@ DB_HOST=
 DB_PORT=
 DB_NAME=
 ```
+
+DONT FORGET set up config db in file sequelize -> config -> config.json before migration
+
 create migration
 ```
 npm run db_up
