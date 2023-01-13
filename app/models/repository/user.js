@@ -1,22 +1,65 @@
-const { writeFileSync } = require("fs")
-const dbUser = require("../database-json/users.json")
+const { Sequelize } = require("sequelize")
+const UserEntity = require("../entites/user")
+const ProductRepository = require("./product")
 
 module.exports = class UserRepository {
-    constructor(helper) {
-        this.helper = helper
+    /**
+     * 
+     * @param {object} param
+     * @param {Sequelize} param.sequelize 
+     * @param {UserEntity} param.userEntity
+     * @param {ProductRepository} param.productRepository
+     */
+    constructor({sequelize, userEntity, productRepository}) {
+        this.productRepository = productRepository
+        this.userEntity = userEntity
+        this.User = sequelize.define("users", this.userEntity.attribute, this.userEntity.options)
+        this.User.hasMany(this.productRepository.Product, {
+            foreignKey: "user_id"
+        })
+    }
+
+    /**
+     * 
+     * @param {object} obj
+     * @param {string} obj.user_id
+     * @param {string} obj.user_email
+     * @param {string} obj.user_password
+     * @param {string} obj.user_name
+     * @param {string} obj.created_at
+     * @param {string} obj.updated_at
+     * @returns 
+     */
+    async createUser(obj) {
+        try {
+            const user = await this.User.create(obj)
+            return user
+        } catch (error) {
+            console.log(error)
+            return false
+        }
     }
 
     /**
      * get user by email and password
-     * @param {string} email 
-     * @param {string} password 
+     * @param {object} param
+     * @param {string} param.email 
+     * @param {string} param.password 
      */
-    getUser(email, password) {
-        const user = dbUser.find(data => data["user_email"] === email && data["user_password"] === this.helper.sha256(password))
+    async getUserByEmailAndPassword({email, password}) {
+        try {
+            const user = await this.User.findOne({ 
+                where: { 
+                    "user_email": email, 
+                    "user_password" : password 
+                }
+            });
     
-        if (!user) return false
-    
-        return user
+            return user
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
     }
     
     /**
@@ -24,58 +67,68 @@ module.exports = class UserRepository {
      * @param {string} id 
      * @returns 
      */
-    getUserById(id) {
-        const user = dbUser.find(data => data["user_id"] === id)
-   
-        if (!user) return false
+    async getUserById(id) {
+        try {
+            // const user = await this.User.findByPk(id);
+            const user = await this.User.findOne({
+                where : {"user_id" : id},
+                include : this.productRepository.Product
+            })
     
-        return user
+            return user
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
     }
     
     /**
      * 
-     * @param {string} email 
-     * @param {string} password 
-     * @param {string} jwtToken 
+     * @param {object} param
+     * @param {string} param.user_id
+     * @param {string} param.session
      * @returns 
      */
-    saveSessionUser(email, password, jwtToken) {
+    async saveSessionUser({user_id, session}) {
         try {
-            const user = this.getUser(email, password)
-        
-            if (!user) return false
-        
-            user.user_session = jwtToken
-        
-            updateDBUser()
-    
-            return true
+            const userSession = {"user_session" : session}
+            const dataUser = { 
+                "user_id": user_id
+            }
+
+            const result = await this.User.update(userSession, { where: dataUser});
+
+            if (result[0] == 1) {
+                return true
+            } else {
+                return false
+            }
         } catch (error) {
             console.log(error.message)
             return false
         }
     }
 
-    deleteSession(user_id) {
-        const user = this.getUserById(user_id)
+    /**
+     * 
+     * @param {string} user_id 
+     * @returns 
+     */
+    async deleteSession(user_id) {
+        try {
+            const userSession = {"user_session" : ""}
+            const dataUser = {"user_id": user_id}
 
-        if (!user) return false
+            const result = await this.User.update(userSession, { where: dataUser});
 
-        user.user_session = ""
-
-        updateDBUser()
-
-        return true
-    }
-}
-
-function updateDBUser() {
-    try {
-        writeFileSync("./app/models/database-json/users.json", JSON.stringify(dbUser), "utf-8")
-
-        return true
-    } catch (error) {
-        console.log(error.message)
-        return false
+            if (result[0] == 1) {
+                return true
+            } else {
+                return false
+            }
+        } catch (error) {
+            console.log(error.message)
+            return false
+        }
     }
 }

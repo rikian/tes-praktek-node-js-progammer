@@ -16,16 +16,15 @@ module.exports = class ControllerResponse {
      * @param {express.Response} res 
      * @returns {express.Response}
      */
-    home(req, res) {
-        const products = this.productRepository.getProducts()
+    async home(req, res) {
+        const products = await this.productRepository.getProducts()
 
         if (req.authentication || req.user) {
             const user = req["user"]
-            const userProducts = this.productRepository.getProductsById(user["user_id"])
 
-            return res.render('user', {products:products, user:user, userProducts:userProducts})
+            return res.render('../app/views/user', {products:products, user:user, userProducts:user.products})
         } else {
-            return res.render('visitor', {products})
+            return res.render('../app/views/visitor', {products})
         }
     }
 }

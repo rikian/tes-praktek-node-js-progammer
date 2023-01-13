@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const crypto = require("crypto")
 
 module.exports = class Helper {
     /**
@@ -28,7 +28,7 @@ module.exports = class Helper {
 
     /**
      * 
-     * @param {string} numstr string contain number
+     * @param {string} numstr string contain number "12345" == true
      * @returns
      */
     srtToInt(numstr) {
@@ -52,8 +52,13 @@ module.exports = class Helper {
     */
     encodeJwtSession(userId, expired) {
         try {
-            const obj = JSON.stringify({"user_id":userId})
+            const obj = JSON.stringify({
+                // add ip for production
+                "user_id":userId
+            })
+
             let token
+
             // set expired if need
             if (expired) {
                 token = jwt.sign(obj, this.JWT_SECRET_KEY, {

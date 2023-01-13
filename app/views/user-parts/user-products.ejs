@@ -2,9 +2,7 @@
     <ul class="ul-products">
         <% for( product of userProducts ) { %>
             <li class="li-product">
-                <img src="/media/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
-                <p>User Id : <%= product.user_id %></p>
-                <p>Id : <%= product.id_barang %></p>
+                <img src="/media/products/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
                 <p>Nama Barang : <%= product.nama_barang %></p>
                 <p>Harga Beli : Rp. <%= product.harga_beli %> ,-</p>
                 <p>Harga Jual : Rp. <%= product.harga_jual %> ,-</p>

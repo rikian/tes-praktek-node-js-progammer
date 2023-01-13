@@ -1,8 +1,9 @@
-const Helper = require("../helper/helper")
-const UserRepository = require("../models/repository/user")
+const Helper = require("../../helper/helper")
+const UserRepository = require("../../models/repository/user")
 const express = require("express")
+const uuid = require("uuid")
 
-module.exports = class controllerAuth {
+module.exports = class ControllerAuth {
     /**
      * 
      * @param {UserRepository} repoUser 
@@ -19,7 +20,40 @@ module.exports = class controllerAuth {
      * @param {express.Response} res 
      * @returns {express.Response}
      */
-    login(req, res) {
+    async register(req, res) {
+        if (Object.values(req.body).length == 0) {
+            return res.status(400).end()
+        }
+        
+        if (!req.body["r_email"] || !req.body["r_name"] || !req.body["r_password1"] || !req.body["r_password2"]) {
+            return res.status(400).end()
+        }
+
+        const date = new Date()
+
+        const dataRegisterUser = {
+            "user_id" : uuid.v4(),
+            "user_name" : req.body["r_name"],
+            "user_email" : req.body["r_email"],
+            "user_password" : this.helper.sha256(req.body["r_password1"]),
+            "created_at": date.toString(),
+            "updated_at": date.toString()
+        }
+
+        const result = await this.repoUser.createUser(dataRegisterUser)
+
+        if (!result) return res.status(400).end()
+
+        return res.status(200).json({"user_email" : req.body["r_email"], "user_name" : req.body["r_name"]})
+    }
+
+    /**
+     * 
+     * @param {express.Request} req 
+     * @param {express.Response} res 
+     * @returns {express.Response}
+     */
+    async login(req, res) {
         if (req["authentication"]) return res.status(400).end()
 
         const dataLogin = req.body
@@ -28,7 +62,10 @@ module.exports = class controllerAuth {
             return res.status(400).json({status:"bad request"})
         }
         
-        const user = this.repoUser.getUser(dataLogin["email_login"], dataLogin["password_login"])
+        const user = await this.repoUser.getUserByEmailAndPassword({
+            "email" : dataLogin["email_login"], 
+            "password" : this.helper.sha256(dataLogin["password_login"])
+        })
 
         if (!user) {
             return res.status(404).json({status:"not found"})
@@ -42,7 +79,10 @@ module.exports = class controllerAuth {
         }
         
         // save session to dbuser
-        const statusSaveSessionUser = this.repoUser.saveSessionUser(dataLogin["email_login"], dataLogin["password_login"], session)
+        const statusSaveSessionUser = await this.repoUser.saveSessionUser({
+            user_id : user["user_id"], 
+            session : session
+        })
         
         if (!statusSaveSessionUser) {
             return res.status(500).json({status:"internal server error"})
@@ -67,9 +107,15 @@ module.exports = class controllerAuth {
         res.json({status:"ok"})
     }
 
-    logout(req, res) {
+    /**
+     * 
+     * @param {express.Request} req 
+     * @param {express.Response} res 
+     * @returns {express.Response}
+     */
+    async logout(req, res) {
         if (req["user"] && req.authentication) {
-            const statusDeleteSession = this.repoUser.deleteSession(req["user"].user_id)
+            const statusDeleteSession = await this.repoUser.deleteSession(req["user"].user_id)
     
             if (!statusDeleteSession) return res.status(500).end()
     

@@ -1,16 +1,16 @@
 const request = require("supertest");
-const server = require("./listener")
+const server = require("./app")
 const server_conf = require("./injector/injector");
 
 jest.mock('./middleware/middleware')
 
 const Middleware = require("./middleware/middleware")
 Middleware.prototype.init.mockImplementation((req, next) => next())
-Middleware.prototype.apiProductMiddleware.mockImplementation((req, res, next) => {
-    if (req["user"] && req.authentication) {
-        return next()
+Middleware.prototype.apiMiddleware.mockImplementation((p) => {
+    if (p.req["user"] && p.req.authentication) {
+        return p.next()
     } else {
-        return res.status(400).end()
+        return p.res.status(400).end()
     }
 })
 

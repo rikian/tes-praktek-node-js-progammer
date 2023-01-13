@@ -1,6 +1,6 @@
 FROM node:16.14.0
 
-WORKDIR /Users/Rikian/Desktop/Project-test-nodejs
+WORKDIR /rikian/project-test-nodejs
 
 COPY package*.json ./
 

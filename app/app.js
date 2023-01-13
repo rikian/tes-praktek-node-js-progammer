@@ -9,7 +9,7 @@ const config = require("./injector/injector")
  * @returns {express.Application}
  */
 module.exports = function (config) {
-    // init express
+    // initial express
     const app = express()
 
     /*
@@ -47,7 +47,8 @@ module.exports = function (config) {
 
     // global static without authentication
     app.use("/static/", express.static("static"));
-    app.use("/media/", express.static("media/upload"));
+    app.use("/media/products/", express.static("media/upload"));
+    app.use("/media/profile/", express.static("media/profile"));
 
     // authentication for login and product
     app.use("/", (req, res, next) => config.middleware.init(req, next))
@@ -57,11 +58,14 @@ module.exports = function (config) {
 
     // Api auth handler
     app.post("/auth/login/", (req, res) => config.controllerAuth.login(req, res))
+    app.post("/auth/register/", (req, res) => config.controllerAuth.register(req, res))
+    
+    // middleware before hit API Product and API Auth
+    app.use(("/"), (req, res, next) => config.middleware.apiMiddleware({req, res, next}))
+
+    // Api Auth
     app.post("/auth/logout/", (req, res) => config.controllerAuth.logout(req, res))
     
-    // check auth in request before hit API Product
-    app.use(("/api/products/"), (req, res, next) => config.middleware.apiProductMiddleware(req, res, next))
-
     // API Product
     app.get("/api/products/"), (req, res) => config.controllerProduct.handlerGetProducts(req, res)
     app.post("/api/products/", (req, res) => config.controllerProduct.handlerInsertProduct(req, res))

@@ -1,9 +1,9 @@
 const express = require("express")
-const Helper = require("../helper/helper")
-const ProductRepository = require("../models/repository/product")
-const UserRepository = require("../models/repository/user");
+const Helper = require("../../helper/helper")
+const ProductRepository = require("../../models/repository/product")
 const formidable = require('formidable');
 const { renameSync, rmSync } = require("fs");
+const uuid = require("uuid")
 const form = formidable({ 
     uploadDir : "./media/upload/",
     allowEmptyFiles : false,
@@ -14,12 +14,11 @@ const form = formidable({
 module.exports = class ControllerProduct {
     /**
      * 
-     * @param {ProductRepository} productRepository 
-     * @param {UserRepository} userRepository
-     * @param {Helper} helper 
+     * @param {object} param
+     * @param {ProductRepository} param.productRepository 
+     * @param {Helper} param.helper 
      */
-    constructor(userRepository, productRepository, helper) {
-        this.userRepository = userRepository
+    constructor({productRepository, helper}) {
         this.productRepository = productRepository
         this.helper = helper
     }
@@ -28,7 +27,7 @@ module.exports = class ControllerProduct {
      * 
      * @returns {object []}
      */
-    handlerGetProducts() {
+    async handlerGetProducts() {
         const products = this.productRepository.getProducts()
         return products
     }
@@ -39,7 +38,7 @@ module.exports = class ControllerProduct {
      * @param {express.Response} res 
      * @returns {express.Response}
      */
-    handlerGetProduct(req, res) {
+    handlerGetProduct(res) {
         return res.status(200).json({status:"maintenance"})
     }
 
@@ -51,9 +50,6 @@ module.exports = class ControllerProduct {
      */
     handlerInsertProduct(req, res) {
         let contentType
-            
-        if (!req.headers["content-type"]) return res.status(400).end()
-
         if (req.headers["content-type"].match(";")) {
             contentType = req.headers["content-type"].trim().split(";")[0]
         } else {
@@ -66,86 +62,98 @@ module.exports = class ControllerProduct {
 
         const user = req["user"]
         
-        form.parse(req, (err, fields, files) => {
-            if (err) {
-                console.log(err.message)
-                
-                if (Object.values(files).length > 0) {
-                    deleteImage(files.newFilename)
+        form.parse(req, async (err, fields, files) => {
+            try {
+                if (err) {
+                    console.log(err.message)
+                    
+                    if (Object.values(files).length > 0) {
+                        deleteImage(files.newFilename)
+                    }
+                    
+                    return res.status(500).json({
+                        status : "failed",
+                        message : "internal server error"
+                    })
                 }
-                
-                return res.status(500).json({
-                    status : "failed",
-                    message : "internal server error"
-                })
-            }
-
-            if (Object.values(files).length === 0 || Object.values(fields).length === 0) {
-                return res.status(400).end()
-            }
-
-            if (!fields.nama_barang || !fields.harga_beli || !fields.harga_jual || !fields.stok || !files.gambar_barang) {
-                deleteImage(files.newFilename)
-                return res.status(400).json({
-                    status : "failed",
-                    message : "bad request"
-                })
-            }
-
-            // check image
-            switch (files.gambar_barang.mimetype) {
-                case "image/jpeg":
-                    break
-                case "image/jpg":
-                    break
-                case "image/png":
-                    break
-                default:
+    
+                if (Object.values(files).length === 0 || Object.values(fields).length === 0) {
+                    return res.status(400).end()
+                }
+    
+                if (!fields.nama_barang || !fields.harga_beli || !fields.harga_jual || !fields.stok || !files.gambar_barang) {
                     deleteImage(files.newFilename)
                     return res.status(400).json({
                         status : "failed",
                         message : "bad request"
-                    })  
-            }
-
-            const ext = files.gambar_barang.mimetype.split("/")[1]
-
-            renameSync(files.gambar_barang.filepath, `${files.gambar_barang.filepath}.${ext}`)
-
-            const dataBarang = {
-                "user_id" : user.user_id,
-                "id_barang": `${Math.floor(Math.random() * 10000000)}${Math.floor(Math.random() * 10000000)}`,
-                "nama_barang": fields.nama_barang,
-                "harga_beli": this.helper.srtToInt(fields.harga_beli),
-                "harga_jual": this.helper.srtToInt(fields.harga_jual),
-                "stok": this.helper.srtToInt(fields.stok),
-                "gambar_barang": `${files.gambar_barang.newFilename}.${ext}`
-            }
-
-            if (!dataBarang.harga_beli || !dataBarang.harga_jual || !dataBarang.stok) {
-                deleteImage(files.newFilename)
-                return res.status(400).json({
-                    status : "failed",
-                    message : "bad request"
+                    })
+                }
+    
+                // check image
+                switch (files.gambar_barang.mimetype) {
+                    case "image/jpeg":
+                        break
+                    case "image/jpg":
+                        break
+                    case "image/png":
+                        break
+                    default:
+                        deleteImage(files.newFilename)
+                        return res.status(400).json({
+                            status : "failed",
+                            message : "bad request"
+                        })  
+                }
+    
+                const ext = files.gambar_barang.mimetype.split("/")[1]
+    
+                renameSync(files.gambar_barang.filepath, `${files.gambar_barang.filepath}.${ext}`)
+    
+                const date = new Date()
+    
+                const dataBarang = {
+                    "user_id" : user.user_id,
+                    "id_barang": uuid.v4(),
+                    "nama_barang": fields.nama_barang,
+                    "harga_beli": this.helper.srtToInt(fields.harga_beli),
+                    "harga_jual": this.helper.srtToInt(fields.harga_jual),
+                    "stok": this.helper.srtToInt(fields.stok),
+                    "gambar_barang": `${files.gambar_barang.newFilename}.${ext}`,
+                    "created_at": date.toString(),
+                    "updated_at": date.toString()
+                }
+    
+                if (!dataBarang.harga_beli || !dataBarang.harga_jual || !dataBarang.stok) {
+                    deleteImage(files.newFilename)
+                    return res.status(400).json({
+                        status : "failed",
+                        message : "bad request"
+                    })
+                }
+    
+                // save product to DB
+                const statusInsertProductToDB = await this.productRepository.insertProduct(dataBarang)
+    
+                if (!statusInsertProductToDB) {
+                    deleteImage(files.newFilename)
+                    return res.status(500).json({
+                        status : "failed",
+                        message : "internal server error"
+                    })
+                }
+    
+                return res.status(200).json({
+                    status : "ok",
+                    message : "success"
                 })
-            }
-
-            // save product to DB
-            const statusInsertProductToDB = this.productRepository.insertProduct(dataBarang)
-
-            if (!statusInsertProductToDB) {
+            } catch (error) {
+                console.log(error.message)
                 deleteImage(files.newFilename)
                 return res.status(500).json({
                     status : "failed",
                     message : "internal server error"
                 })
             }
-
-            return res.status(200).json({
-                status : "ok",
-                message : "success"
-            })
-
         });
     }
 
@@ -155,15 +163,17 @@ module.exports = class ControllerProduct {
      * @param {express.Response} res 
      * @returns {express.Response}
      */
-    handlerUpdateProduct(req, res) {
+    async handlerUpdateProduct(req, res) {
+        const date = new Date()
         const user = req["user"]
-        // update product without change picture
+        // update product without change picture, enctype="application/x-www-form-urlencoded"
         if (Object.values(req.body).length != 0) {
             const newDataProduct = req.body
 
             newDataProduct.harga_beli = this.helper.srtToInt(newDataProduct.harga_beli)
             newDataProduct.harga_jual = this.helper.srtToInt(newDataProduct.harga_jual)
             newDataProduct.stok = this.helper.srtToInt(newDataProduct.stok)
+            newDataProduct.updated_at = date.toString()
 
             if (!newDataProduct.user_id || !newDataProduct.id_barang || !newDataProduct.nama_barang ||!newDataProduct.harga_beli || !newDataProduct.harga_jual || !newDataProduct.stok || !newDataProduct.gambar_barang || newDataProduct.gambar_barang_baru) {
                 return res.status(400).json({status:"bad request"})
@@ -173,7 +183,7 @@ module.exports = class ControllerProduct {
                 return res.status(401).json({status:"unauthorize"})
             }
 
-            const saveUpdateProduct = this.productRepository.updateProduct(newDataProduct)
+            const saveUpdateProduct = await this.productRepository.updateProduct(newDataProduct)
 
             if (!saveUpdateProduct) {
                 return res.status(500).json({status:"failed update product"})
@@ -182,11 +192,11 @@ module.exports = class ControllerProduct {
             return res.status(200).json({status:"ok"})
         }
 
-        if (!req.headers["content-type"]) return res.status(400).end()
-
+        // update product with change image, enctype="multipart/form-data"
         let contentType
                 
         if (req.headers["content-type"].match(";")) {
+            // some browser use multopart/form-data and boundary
             contentType = req.headers["content-type"].trim().split(";")[0]
         } else {
             contentType = req.headers["content-type"]
@@ -196,7 +206,7 @@ module.exports = class ControllerProduct {
             return res.status(400).end()
         }
 
-        form.parse(req, (err, fields, files) => {
+        form.parse(req, async (err, fields, files) => {
             if (err) {
                 console.log(err.message)
                 deleteImage(files.newFilename)
@@ -221,6 +231,7 @@ module.exports = class ControllerProduct {
             fields.harga_beli = this.helper.srtToInt(fields.harga_beli)
             fields.harga_jual = this.helper.srtToInt(fields.harga_jual)
             fields.stok = this.helper.srtToInt(fields.stok)
+            fields["updated_at"] = date.toString()
 
             if (!fields.harga_beli || !fields.harga_jual || !fields.stok) {
                 deleteImage(files.newFilename)
@@ -253,7 +264,7 @@ module.exports = class ControllerProduct {
             
             fields.gambar_barang_baru = `${files.gambar_barang_baru.newFilename}.${ext}`
 
-            const saveUpdateProduct = this.productRepository.updateProduct(fields)
+            const saveUpdateProduct = await this.productRepository.updateProduct(fields)
 
             if (!saveUpdateProduct) {
                 deleteImage(files.newFilename)
@@ -273,7 +284,7 @@ module.exports = class ControllerProduct {
      * @param {express.Response} res 
      * @returns {express.Response}
      */
-    handlerDeleteProduct(req, res) {
+    async handlerDeleteProduct(req, res) {
         if (Object.values(req.body).length == 0) {
             return res.status(401).end()
         }
@@ -287,12 +298,12 @@ module.exports = class ControllerProduct {
             })
         }
 
-        const statusDeleteProduct = this.productRepository.deleteProduct({
+        const statusDeleteProduct = await this.productRepository.deleteProduct({
             user_id:dataProduct.user_id, id_barang:dataProduct.id_barang
         })
 
         // delete product from db
-        if(!statusDeleteProduct) {
+        if(!statusDeleteProduct || statusDeleteProduct.result != 1) {
             return res.status(404).json({
                 status : "failed",
                 message : "not found"
@@ -300,7 +311,7 @@ module.exports = class ControllerProduct {
         }
 
         // delete image from media
-        deleteImage(statusDeleteProduct.gambar_barang)
+        deleteImage(statusDeleteProduct.product.gambar_barang)
 
         return res.status(200).json({status:"success"})
     }

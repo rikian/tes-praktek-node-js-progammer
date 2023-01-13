@@ -28,10 +28,6 @@
             height: 100%;
         }
 
-        .container-visitor-products{
-            border: 1px solid black;
-        }
-
         .ul-products{
             display: flex;
             flex-wrap: wrap;
@@ -158,11 +154,56 @@
 <body>
     <main>
         <!-- visitor -->
+        <style>
+            header .h1-header{
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            header .profile-header{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            header img{
+                width: 50px;
+                height: 50px;
+            }
+
+            header .img-header{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            header .btn-header{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .btn-header button {
+                margin: 5px;
+            }
+        </style>
         <header>
             <h1 id="h1-header" class="h1-header">Home Page</h1>
-            <p>Hello <%= user["user_email"] %> </p>
-            <button onclick="logout(event)" id="button-logout" style="width: 100px;" class="btn btn-primary btn-block">Logout</button>
-
+            <hr>
+            <div class="profile-header">
+                <div class="img-header">
+                    <img src="/media/profile/default-profile.svg" alt="">
+                    <p><%= user["user_email"] %> </p>
+                </div>
+                <div class="btn-header">
+                    <button id="button-logout" style="width: 70px; height: 40px;" class="btn btn-primary btn-block">Edit</button>
+                    <button onclick="logout(event)" id="button-logout" style="width: 70px; height: 40px;" class="btn btn-primary btn-block">Logout</button>
+                </div>
+            </div>
+            <hr>
             <script>
                 var XMLlogout = new XMLHttpRequest()
                 function logout(e) {
@@ -181,10 +222,7 @@
                 <ul class="ul-products">
                     <% for( product of products ) { %>
                         <li class="li-product">
-                            <img src="/media/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
-                            <!-- <p>URL Gambar Barang : <%= product.gambar_barang %></p> -->
-                            <p>User Id : <%= product.user_id %></p>
-                            <p>Id : <%= product.id_barang %></p>
+                            <img src="/media/products/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
                             <p>Nama Barang : <%= product.nama_barang %></p>
                             <p>Harga Beli : Rp. <%= product.harga_beli %> ,-</p>
                             <p>Harga Jual : Rp. <%= product.harga_jual %> ,-</p>
@@ -235,7 +273,7 @@
 
         function openContainerUserAddProduts(e) {
             if(containerUserAddProducts.style.display === "none") {
-                h1Header.innerText = "User Page"
+                h1Header.innerText = "User Page - Add Products"
                 
                 buttonOpenContainerUserAddProducts.innerText = "X"
                 buttonOpenContainerUserProducts.innerText = "O"
@@ -263,7 +301,7 @@
 
         function openContainerUserProducts(e) {
             if(containerUserProducts.style.display === "none") {
-                h1Header.innerText = "User Page"
+                h1Header.innerText = "User Page - Products"
                 
                 buttonOpenContainerUserAddProducts.innerText = "+"
                 buttonOpenContainerUserProducts.innerText = "C"
@@ -291,7 +329,7 @@
 
         function openContainerUserUpdateProducts(e, p) {
             if(containerUserUpdateProducts.style.display === "none") {
-                upPgBarang.src = "/media/" + p.gambar_barang
+                upPgBarang.src = "/media/products/" + p.gambar_barang
                 upIdUser.value = p.user_id
                 upIdBarang.value = p.id_barang
                 upNameBarang.value = p.nama_barang
@@ -300,7 +338,7 @@
                 upStok.value = parseInt(p.stok)
                 upGambarBarang.value = p.gambar_barang
 
-                h1Header.innerText = "User Page"
+                h1Header.innerText = "User Page - Update Products"
                 
                 buttonOpenContainerUserAddProducts.innerText = "+"
                 buttonOpenContainerUserProducts.innerText = "O"

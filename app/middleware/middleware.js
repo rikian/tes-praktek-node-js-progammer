@@ -21,27 +21,22 @@ module.exports = class Middleware {
      * @param {express.NextFunction} next 
      * @returns {express.NextFunction}
      */
-    init(req, next) {
+    async init(req, next) {
         const cookies = req.cookies
-        if (!cookies["id"] || !cookies["session"]) {
-            if (req.url === "/auth/login/") {
-                return next()
-            }
+        
+        if (!cookies["id"] || !cookies["session"]) return next()
 
-            return next()
-        }
+        const user = await this.userRepository.getUserById(cookies.id)
 
-        const user = this.userRepository.getUserById(cookies.id)
-
-        if (!user) return next()
+        if (!user || user == null || !user["dataValues"]) return next()
 
         // check authentication
-        const isAuthentication = checkAuth(user, cookies, this.helper)
+        const isAuthentication = this.checkAuth(user, cookies, this.helper)
 
         if (!isAuthentication) return next()
 
         // inject user to request
-        req["user"] = user
+        req["user"] = user.dataValues
         req["authentication"] = true
 
         return next()
@@ -49,44 +44,45 @@ module.exports = class Middleware {
 
     /**
      * 
-     * @param {express.Request} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
+     * @param {object} param
+     * @param {express.Request} param.req 
+     * @param {express.Response} param.res 
+     * @param {express.NextFunction} param.next 
      * @returns {express.NextFunction}
      */
-    apiProductMiddleware(req, res, next) {
-        if (req["user"] && req.authentication) {
+    apiMiddleware({req, res, next}) {
+        if (req["user"] && req.authentication && req.headers["content-type"]) {
             return next()
         } else {
             return res.status(404).end()
         }
     }
-}
 
-/**
- * 
- * @param {object} user 
- * @param {Helper} helper 
- * @returns 
- */
-function checkAuth(user, cookies, helper) {
-    try {
-        const sessionParts = helper.splitStr(user["user_session"], ".")
+    /**
+     * 
+     * @param {object} user 
+     * @param {Helper} helper 
+     * @returns 
+    */
+    checkAuth(user, cookies, helper) {
+        try {
+            const sessionParts = helper.splitStr(user["user_session"], ".")
 
-        if (!sessionParts || sessionParts.length !== 3 || sessionParts[2] !== cookies.session) {
+            if (!sessionParts || sessionParts.length !== 3 || sessionParts[2] !== cookies.session) {
+                return false
+            }
+
+            // decode jwt session
+            const sessionUser = helper.decodeJwtSession(user["user_session"])
+
+            if (!sessionUser || !sessionUser["user_id"] || sessionUser["user_id"] !== cookies.id) {
+                return false
+            }
+
+            return true
+        } catch (error) {
+            console.log(error.message)
             return false
         }
-
-        // decode jwt session
-        const sessionUser = helper.decodeJwtSession(user["user_session"])
-
-        if (!sessionUser || !sessionUser["user_id"] || sessionUser["user_id"] !== cookies.id) {
-            return false
-        }
-
-        return true
-    } catch (error) {
-        console.log(error.message)
-        return false
     }
 }

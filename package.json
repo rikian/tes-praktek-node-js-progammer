@@ -5,25 +5,33 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "npx jest"
+    "test": "npx jest --detectOpenHandles",
+    "db_up": "npx sequelize-cli db:migrate --config './sequelize/config/config.json' --migrations-path './sequelize/migrations' --name 'init.js'",
+    "db_down": "npx sequelize-cli db:migrate:undo --config './sequelize/config/config.json' --migrations-path './sequelize/migrations' --name 'init.js'",
+    "db_seeds": "npx sequelize-cli db:seed:all --config './sequelize/config/config.json' --seeders-path './sequelize/seeders'",
+    "db_reset" : "npm run db_down && npm run db_up && npm run db_seeds"
   },
   "keywords": [],
   "author": "Rikian Faisal",
   "license": "MIT",
   "devDependencies": {
     "jest": "latest",
+    "sequelize-cli": "^6.5.2",
     "supertest": "latest"
   },
   "dependencies": {
-    "body-parser": "^1.20.1",
+    "body-parser": "^1.11.0",
     "cookie-parser": "latest",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "ejs": "latest",
-    "express": "latest",
+    "express": "^4.18.2",
     "formidable": "^2.1.1",
-    "jest": "latest",
     "jsonwebtoken": "latest",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.28.0",
+    "uuid": "^9.0.0",
     "winston": "^3.8.2"
   },
   "engines": {

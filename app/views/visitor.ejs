@@ -28,10 +28,6 @@
             height: 100%;
         }
 
-        .container-visitor-products{
-            border: 1px solid black;
-        }
-
         .ul-products{
             display: flex;
             flex-wrap: wrap;
@@ -158,26 +154,67 @@
 <body>
     <main>
         <!-- visitor -->
+        <style>
+            header {
+                /* border: 1px solid black; */
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            header .c-auth-page{
+                /* border: 1px solid black; */
+                display: flex;
+            }
+
+            .c-auth-page button {
+                margin: 5px;
+            }
+            
+            button.btn-general {
+                width: 50px;
+                height: 35px;
+                border: none;
+            }
+
+            button.btn-auth{
+                background-color: green;
+                color: white;
+                border-radius: 5px;
+            }
+
+            button.btn-auth:hover{
+                background-color: rgb(9, 99, 9);
+            }
+        </style>
         <header>
             <h1 id="h1-header" class="h1-header">Home Page</h1>
-            <button onclick="openContainerLogin(event)" id="button-open-container-login" style="width: 100px;" class="btn btn-primary btn-block">Login</button>
+            <div class="c-auth-page">
+                <button onclick="openContainerLogin(event)" id="button-open-container-login" style="width: 100px;" class="btn-auth btn-general">Login</button>
+                <button onclick="openContainerRegister(event)" id="button-open-container-register" style="width: 100px;" class="btn-auth btn-general">Register</button>
+            </div>
         </header>
 
+        <style>
+            .auth-page{
+                width: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .login-box {
+                margin: 10px;
+            }
+        </style>
         <section id="auth-page" class="auth-page">
             <div class="login-box">
-                <div class="login-logo">
-                    <p><b>Test </b>Node JS</p>
-                </div>
-    
                 <div class="card">
                     <div class="card-body login-card-body">
                         <p class="login-box-msg">Sign in to start your session</p>
                         
-                        <p class="login-box-msg">rikian@coolguy.com</p>
-                        <p class="login-box-msg">frizka@gmail.com</p>
-                        <p class="login-box-msg">boim@gmail.com</p>
-            
-                        <p class="login-box-msg">54ng4t_R@h451A....</p>
                         <form id="login-form">
                             <div class="input-group mb-3">
                                 <input id="email_login" name="email_login" type="text" class="form-control" placeholder="Email" required>
@@ -204,8 +241,8 @@
                     </div>
                 </div>
 
-
                 <script>
+                    "use strict"
                     var email  = document.querySelector("#email_login")
                     var password = document.querySelector("#password_login")
                     var btnLogin = document.querySelector("#btn-login")
@@ -235,16 +272,117 @@
                 </script>
             </div>
         </section>
+        
+        <section id="register-page" class="register-page">
+            <div id="register-box" class="register-box">
+                <div class="card card-outline card-primary">
+                    <div class="card-body">
+                        <p class="login-box-msg">Register to start your session</p>
+                
+                        <form id="form-register">
+                            <!-- user name -->
+                            <div class="input-group mb-3">
+                                <input id="register_name" type="text" class="form-control" placeholder="Full name">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- email -->
+                            <div class="input-group mb-3">
+                                <input id="register_email" type="email" class="form-control" placeholder="Email">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- password 1 -->
+                            <div class="input-group mb-3">
+                                <input id="register_password_1" type="password" class="form-control" placeholder="Password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- password 2 -->
+                            <div class="input-group mb-3">
+                                <input id="register_password_2" type="password" class="form-control" placeholder="Retype password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- term & condition -->
+                            <div class="col-8">
+                                <div class="icheck-primary">
+                                    <input id="regis-term" type="checkbox" name="user_terms">
+                                    <label for="agreeTerms">I agree to the <a href="#">terms</a></label>
+                                </div>
+                            </div>
+    
+                            <button id="regis-reset" type="reset" class="btn btn-primary btn-block text-center">Reset</button>
+                            <button onclick="register(event)" id="button-register" type="submit" class="btn btn-primary btn-block text-center">Register</button>
+                        </form>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                "use strict"
+                var registerName = document.querySelector("#register_name")
+                var registerEmail = document.querySelector("#register_email")
+                var registerPassword1 = document.querySelector("#register_password_1")
+                var registerPassword2 = document.querySelector("#register_password_2")
+                var xmlRegister = new XMLHttpRequest()
+                function register(e) {
+                    e.preventDefault()
+
+                    if (registerName.value.trim() == "") {
+                        return alert("Name cannot be empty")
+                    }
+                    
+                    if (registerEmail.value.trim() == "") {
+                        return alert("Email cannot be empty")
+                    }
+
+                    if (registerPassword1.value.trim() == "" || registerPassword2.value.trim() == "") {
+                        return alert("Password cannot be empty")
+                    }
+
+                    if (registerPassword1.value !== registerPassword2.value) {
+                        return alert("Password 1 not match passowd 2")
+                    }
+
+                    var dataRegister = "r_name=" + registerName.value + "&r_email=" + registerEmail.value + "&r_password1=" + registerPassword1.value + "&r_password2=" + registerPassword2.value
+
+                    xmlRegister.open("post", "/auth/register/", true)
+                    xmlRegister.setRequestHeader("content-type", "application/x-www-form-urlencoded")
+                    xmlRegister.send(dataRegister)
+                    xmlRegister.onload = function() {
+                        if (this.status === 200) {
+                            var response = JSON.parse(this.responseText)
+                            alert("thank you " + response["user_name"] +" for registrasion\nplease check your email : '"+response["user_email"]+"' for activated")
+
+                            return window.location.reload()
+                        }
+
+                        return alert("status : " + this.status + "message : " + this.statusText)
+                    }
+                }
+            </script>
+        </section>
 
         <section id="visitor-page" class="visitor-page">
             <div class="container-visitor-products">
                 <ul class="ul-products">
                     <% for( product of products ) { %>
                         <li class="li-product">
-                            <img src="/media/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
-                            <!-- <p>URL Gambar Barang : <%= product.gambar_barang %></p> -->
-                            <p>User Id : <%= product.user_id %></p>
-                            <p>Id : <%= product.id_barang %></p>
+                            <img src="/media/products/<%=product.gambar_barang %>" alt="asset-test" loading="lazy">
                             <p>Nama Barang : <%= product.nama_barang %></p>
                             <p>Harga Beli : Rp. <%= product.harga_beli %> ,-</p>
                             <p>Harga Jual : Rp. <%= product.harga_jual %> ,-</p>
@@ -256,172 +394,105 @@
             </div>
         </section>
 
-        <section id="user-page" class="user-page">
-            <section class="user-products">
-                <div id="container-user-products" class="container-user-products">
-                    <p>Please Login to see your products</p>
-                </div>
-            </section>
-
-            <section class="user-add-products">
-                <div id="container-user-add-products" class="container-form-add-products">
-                    <p>Please Login to see your products</p>
-                </div>
-            </section>
-
-            <section class="user-update-products">    
-                <div id="container-user-update-products" class="container-user-update-products">
-                    <p>Please Login to see your products</p>
-                </div>
-            </section>
-        </section>
-
         <button id="button-open-container-user-add-products" onclick="openContainerUserAddProduts(event)" class="btn-fix btn-tambah-barang">+</button>
         <button id="button-open-container-user-products" onclick="openContainerUserProducts(event)" class="btn-fix btn-ubah-barang">O</button>
         <footer></footer>
     </main>
 
     <script>
+        "use strict"
         // dom display
+        var buttonOpenContainerLogin = document.querySelector("#button-open-container-login")
+        var buttonOpenContainerRegister = document.querySelector("#button-open-container-register")
+
         var h1Header = document.querySelector("#h1-header")
+
         var buttonOpenContainerUserAddProducts = document.querySelector("#button-open-container-user-add-products")
         var buttonOpenContainerUserProducts = document.querySelector("#button-open-container-user-products")
-        var buttonOpenContainerLogin = document.querySelector("#button-open-container-login")
-
+        
         var authPage = document.querySelector("#auth-page")
+        var registerPage = document.querySelector("#register-page")
         var visitorPage = document.querySelector("#visitor-page")
-        var userPage = document.querySelector("#user-page")
-        var containerUserProducts = document.querySelector("#container-user-products")
-        var containerUserAddProducts = document.querySelector("#container-user-add-products")
-        var containerUserUpdateProducts = document.querySelector("#container-user-update-products")
 
         visitorPage.style.display = "flex"
         authPage.style.display = "none"
-        userPage.style.display = "none"
-        containerUserProducts.style.display = "none"
-        containerUserAddProducts.style.display = "none"
-        containerUserUpdateProducts.style.display = "none"
+        registerPage.style.display = "none"
+
+        function openContainerRegister(e) {
+            if(registerPage.style.display === "none") {
+                h1Header.innerText = "Register Page"
+
+                buttonOpenContainerRegister.innerText = "Close"
+                buttonOpenContainerLogin.innerText = "Login"
+
+                buttonOpenContainerUserAddProducts.innerText = "+"
+                buttonOpenContainerUserProducts.innerText = "O"
+
+                registerPage.style.display = "flex"
+                authPage.style.display = "none"
+                visitorPage.style.display = "none"
+                return
+            }
+
+            h1Header.innerText = "Home Page"
+
+            buttonOpenContainerRegister.innerText = "Register"
+            buttonOpenContainerLogin.innerText = "Login"
+            buttonOpenContainerUserAddProducts.innerText = "+"
+            buttonOpenContainerUserProducts.innerText = "O"
+
+            registerPage.style.display = "none"
+            authPage.style.display = "none"
+            visitorPage.style.display = "flex"
+            return
+        }
 
         function openContainerLogin(e) {
             if(authPage.style.display === "none") {
                 h1Header.innerText = "Login Page"
+
                 buttonOpenContainerLogin.innerText = "Close"
+                buttonOpenContainerRegister.innerText = "Register"
+                
                 buttonOpenContainerUserAddProducts.innerText = "+"
                 buttonOpenContainerUserProducts.innerText = "O"
 
                 authPage.style.display = "flex"
+                registerPage.style.display = "none"
                 visitorPage.style.display = "none"
-                userPage.style.display = "none"
                 return
             }
 
             h1Header.innerText = "Home Page"
+
             buttonOpenContainerLogin.innerText = "Login"
+            buttonOpenContainerRegister.innerText = "Register"
+
             buttonOpenContainerUserAddProducts.innerText = "+"
             buttonOpenContainerUserProducts.innerText = "O"
+
             authPage.style.display = "none"
+            registerPage.style.display = "none"
             visitorPage.style.display = "flex"
-            userPage.style.display = "none"
             return
         }
 
         function openContainerUserAddProduts(e) {
-            if(containerUserAddProducts.style.display === "none") {
-                h1Header.innerText = "User Page"
-                buttonOpenContainerLogin.innerText = "Login"
-                buttonOpenContainerUserAddProducts.innerText = "X"
-                buttonOpenContainerUserProducts.innerText = "O"
+            openContainerLogin()
 
-                visitorPage.style.display = "none"
-                authPage.style.display = "none"
-                userPage.style.display = "flex"
-                containerUserProducts.style.display = "none"
-                containerUserAddProducts.style.display = "flex"
-                containerUserUpdateProducts.style.display = "none"
+            if (authPage.style.display == "flex") {
+                h1Header.innerText = "User Page - Add Products"
                 return
             }
-            
-            h1Header.innerText = "Home Page"
-            buttonOpenContainerLogin.innerText = "Login"
-            buttonOpenContainerUserAddProducts.innerText = "+"
-            buttonOpenContainerUserProducts.innerText = "O"
-            
-            visitorPage.style.display = "flex"
-            authPage.style.display = "none"
-            userPage.style.display = "none"
-            containerUserProducts.style.display = "none"
-            containerUserAddProducts.style.display = "none"
-            containerUserUpdateProducts.style.display = "none"
-            return
         }
 
         function openContainerUserProducts(e) {
-            if(containerUserProducts.style.display === "none") {
-                h1Header.innerText = "User Page"
-                buttonOpenContainerLogin.innerText = "Login"
-                buttonOpenContainerUserAddProducts.innerText = "+"
-                buttonOpenContainerUserProducts.innerText = "C"
+            openContainerLogin()
 
-                visitorPage.style.display = "none"
-                authPage.style.display = "none"
-                userPage.style.display = "flex"
-                containerUserProducts.style.display = "flex"
-                containerUserAddProducts.style.display = "none"
-                containerUserUpdateProducts.style.display = "none"
+            if (authPage.style.display == "flex") {
+                h1Header.innerText = "User Page - Products"
                 return
             }
-            
-            h1Header.innerText = "Home Page"
-            buttonOpenContainerLogin.innerText = "Login"
-            buttonOpenContainerUserAddProducts.innerText = "+"
-            buttonOpenContainerUserProducts.innerText = "O"
-            
-            visitorPage.style.display = "flex"
-            authPage.style.display = "none"
-            userPage.style.display = "none"
-            containerUserProducts.style.display = "none"
-            containerUserAddProducts.style.display = "none"
-            containerUserUpdateProducts.style.display = "none"
-            return
-        }
-
-        function openContainerUserUpdateProducts(e, p) {
-            if(containerUserUpdateProducts.style.display === "none") {
-                upPgBarang.src = "/media/" + p.gambar_barang
-                upIdUser.value = p.user_id
-                upIdBarang.value = p.id_barang
-                upNameBarang.value = p.nama_barang
-                upHargaBeli.value = parseInt(p.harga_beli)
-                upHargaJual.value = parseInt(p.harga_jual)
-                upStok.value = parseInt(p.stok)
-                upGambarBarang.value = p.gambar_barang
-
-                h1Header.innerText = "User Page"
-                buttonOpenContainerLogin.innerText = "Login"
-                buttonOpenContainerUserAddProducts.innerText = "+"
-                buttonOpenContainerUserProducts.innerText = "O"
-
-                visitorPage.style.display = "none"
-                authPage.style.display = "none"
-                userPage.style.display = "flex"
-                containerUserProducts.style.display = "none"
-                containerUserAddProducts.style.display = "none"
-                containerUserUpdateProducts.style.display = "flex"
-                return
-            }
-            
-            h1Header.innerText = "Home Page"
-            buttonOpenContainerLogin.innerText = "Login"
-            buttonOpenContainerUserAddProducts.innerText = "+"
-            buttonOpenContainerUserProducts.innerText = "O"
-            
-            visitorPage.style.display = "flex"
-            authPage.style.display = "none"
-            userPage.style.display = "none"
-            containerUserProducts.style.display = "none"
-            containerUserAddProducts.style.display = "none"
-            containerUserUpdateProducts.style.display = "none"
-            return
         }
     </script>
 </body>
