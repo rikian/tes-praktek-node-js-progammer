@@ -9,25 +9,23 @@ npm install
 ```
 npm run start or node index
 ```
+setup database for postgres in .env file
 ```
-user name : rikian@coolguy.com
-user name : frizka@gmail.com
-user name : boim@gmail.com
-password : 54ng4t_R@h451A....
+DIALECT=postgres
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=
+DB_NAME=
 ```
-```javascript
-atau dapat diubah di bagian app -> models -> users.json
-...
-
+create migration
 ```
-```javascript
-jika error, jangan lupa uncoment address to 0.0.0.0 di file .env
+npm run db_up
 ```
-
+run app
 ```
-configuration server app -> injector -> injector.js
+npm run start
 ```
-
 test --> https://good-blue-blackbuck-hose.cyclic.app
 
 by rikian faisal --> https://lawnsoor.com
