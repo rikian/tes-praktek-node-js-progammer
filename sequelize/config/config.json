@@ -1,11 +1,11 @@
 {
   "development": {
-    "dialect": "postgres",
-    "username": "rikian",
-    "password": "wsxcvbnm,.1234",
-    "host": "127.0.0.1",
+    "dialect": "",
+    "username": "",
+    "password": "",
+    "host": "",
     "port" : 5432,
-    "database": "tes_praktek_node_js_progamer"
+    "database": ""
   },
   "test": {
     "username": "root",

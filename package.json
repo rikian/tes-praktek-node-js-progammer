@@ -9,7 +9,7 @@
     "db_up": "npx sequelize-cli db:migrate --config './sequelize/config/config.json' --migrations-path './sequelize/migrations' --name 'init.js'",
     "db_down": "npx sequelize-cli db:migrate:undo --config './sequelize/config/config.json' --migrations-path './sequelize/migrations' --name 'init.js'",
     "db_seeds": "npx sequelize-cli db:seed:all --config './sequelize/config/config.json' --seeders-path './sequelize/seeders'",
-    "db_reset" : "npm run db_down && npm run db_up && npm run db_seeds"
+    "db_reset": "npm run db_down && npm run db_up && npm run db_seeds"
   },
   "keywords": [],
   "author": "Rikian Faisal",
@@ -32,6 +32,7 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.28.0",
     "uuid": "^9.0.0",
+    "validator": "^13.7.0",
     "winston": "^3.8.2"
   },
   "engines": {
