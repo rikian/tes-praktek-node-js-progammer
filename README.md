@@ -19,6 +19,10 @@ create migration
 ```
 npm run db_up
 ```
+run test
+```
+npm run test
+```
 run app
 ```
 npm run start
