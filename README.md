@@ -6,9 +6,6 @@ git clone git@github.com:rikian/tes-praktek-node-js-progammer.git
 ```
 npm install
 ```
-```
-npm run start or node index
-```
 setup database for postgres in .env file
 ```
 DIALECT=postgres
