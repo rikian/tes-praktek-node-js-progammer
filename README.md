@@ -27,6 +27,5 @@ run app
 ```
 npm run start
 ```
-test --> https://good-blue-blackbuck-hose.cyclic.app
 
 by rikian faisal --> https://lawnsoor.com
