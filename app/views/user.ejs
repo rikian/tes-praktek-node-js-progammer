@@ -199,6 +199,7 @@
                     <p><%= user["user_email"] %> </p>
                 </div>
                 <div class="btn-header">
+                    <button onclick="home(event)" id="button-home" style="width: 70px; height: 40px;" class="btn btn-primary btn-block">Home</button>
                     <button id="button-logout" style="width: 70px; height: 40px;" class="btn btn-primary btn-block">Edit</button>
                     <button onclick="logout(event)" id="button-logout" style="width: 70px; height: 40px;" class="btn btn-primary btn-block">Logout</button>
                 </div>
@@ -270,6 +271,21 @@
         containerUserProducts.style.display = "none"
         containerUserAddProducts.style.display = "none"
         containerUserUpdateProducts.style.display = "none"
+
+        function home(e) {
+            if(visitorPage.style.display === "none") {
+                h1Header.innerText = "Home Page"
+                
+                visitorPage.style.display = "flex"
+            
+                buttonOpenContainerUserAddProducts.innerText = "+"
+                buttonOpenContainerUserProducts.innerText = "O"
+                containerUserProducts.style.display = "none"
+                containerUserAddProducts.style.display = "none"
+                containerUserUpdateProducts.style.display = "none"
+                return
+            }
+        }
 
         function openContainerUserAddProduts(e) {
             if(containerUserAddProducts.style.display === "none") {

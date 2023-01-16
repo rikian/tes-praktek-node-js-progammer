@@ -16,7 +16,7 @@ module.exports = {
       fakeUser.push({
         "user_id" : uuid.v4(),
         "user_email" : fakeEmail[i],
-        "user_password" : helper.sha256("12345"),
+        "user_password" : helper.sha256("1234567"),
         "user_name" : fakeName[i],
         "created_at": date.toString(),
         "updated_at": date.toString()

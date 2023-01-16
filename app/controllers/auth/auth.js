@@ -24,8 +24,10 @@ module.exports = class ControllerAuth {
         if (Object.values(req.body).length == 0) {
             return res.status(400).end()
         }
-        
-        if (!req.body["r_email"] || !req.body["r_name"] || !req.body["r_password1"] || !req.body["r_password2"]) {
+
+        const validationDataRegistration = this.helper.validationDataRegister(req.body)
+
+        if (!validationDataRegistration) {
             return res.status(400).end()
         }
 
@@ -56,15 +58,15 @@ module.exports = class ControllerAuth {
     async login(req, res) {
         if (req["authentication"]) return res.status(400).end()
 
-        const dataLogin = req.body
+        const validationDataLogin = this.helper.validationDataLogin(req.body)
 
-        if (!dataLogin["email_login"] || !dataLogin["password_login"]) {
+        if (!validationDataLogin) {
             return res.status(400).json({status:"bad request"})
         }
         
         const user = await this.repoUser.getUserByEmailAndPassword({
-            "email" : dataLogin["email_login"], 
-            "password" : this.helper.sha256(dataLogin["password_login"])
+            "email" : req.body["email_login"], 
+            "password" : this.helper.sha256(req.body["password_login"])
         })
 
         if (!user) {

@@ -76,33 +76,17 @@ module.exports = class ControllerProduct {
                         message : "internal server error"
                     })
                 }
-    
-                if (Object.values(files).length === 0 || Object.values(fields).length === 0) {
-                    return res.status(400).end()
+                
+                const validationImageProduct = this.helper.validationImageProduct(files)
+                
+                if (!validationImageProduct) {
+                    return res.status(404).end()
                 }
-    
-                if (!fields.nama_barang || !fields.harga_beli || !fields.harga_jual || !fields.stok || !files.gambar_barang) {
-                    deleteImage(files.newFilename)
-                    return res.status(400).json({
-                        status : "failed",
-                        message : "bad request"
-                    })
-                }
-    
-                // check image
-                switch (files.gambar_barang.mimetype) {
-                    case "image/jpeg":
-                        break
-                    case "image/jpg":
-                        break
-                    case "image/png":
-                        break
-                    default:
-                        deleteImage(files.newFilename)
-                        return res.status(400).json({
-                            status : "failed",
-                            message : "bad request"
-                        })  
+
+                const validationDataInsertProduct = this.helper.validationDataProduct(fields)
+
+                if (!validationDataInsertProduct) {
+                    return res.status(404).end()
                 }
     
                 const ext = files.gambar_barang.mimetype.split("/")[1]
@@ -121,14 +105,6 @@ module.exports = class ControllerProduct {
                     "gambar_barang": `${files.gambar_barang.newFilename}.${ext}`,
                     "created_at": date.toString(),
                     "updated_at": date.toString()
-                }
-    
-                if (!dataBarang.harga_beli || !dataBarang.harga_jual || !dataBarang.stok) {
-                    deleteImage(files.newFilename)
-                    return res.status(400).json({
-                        status : "failed",
-                        message : "bad request"
-                    })
                 }
     
                 // save product to DB

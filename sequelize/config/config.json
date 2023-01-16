@@ -1,11 +1,10 @@
 {
   "development": {
-    "dialect": "",
-    "username": "",
-    "password": "",
-    "host": "",
-    "port" : 5432,
-    "database": ""
+    "dialect": "postgres",
+    "username": ,
+    "password": ,
+    "database": ,
+    "host": 
   },
   "test": {
     "username": "root",

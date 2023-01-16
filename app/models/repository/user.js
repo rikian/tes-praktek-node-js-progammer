@@ -35,7 +35,7 @@ module.exports = class UserRepository {
             const user = await this.User.create(obj)
             return user
         } catch (error) {
-            console.log(error)
+            console.log(error.errors[0].message + " - " + error.errors[0].value + " aleady use")
             return false
         }
     }
@@ -57,7 +57,7 @@ module.exports = class UserRepository {
     
             return user
         } catch (error) {
-            console.log(error.message)
+            console.log(error.errors[0].message)
             return false
         }
     }
@@ -77,7 +77,7 @@ module.exports = class UserRepository {
     
             return user
         } catch (error) {
-            console.log(error.message)
+            console.log(error.errors[0].message)
             return false
         }
     }
@@ -104,7 +104,7 @@ module.exports = class UserRepository {
                 return false
             }
         } catch (error) {
-            console.log(error.message)
+            console.log(error.errors[0].message)
             return false
         }
     }
@@ -127,7 +127,7 @@ module.exports = class UserRepository {
                 return false
             }
         } catch (error) {
-            console.log(error.message)
+            console.log(error.errors[0].message)
             return false
         }
     }
